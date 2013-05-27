@@ -21,6 +21,7 @@ class GTranslateCommand extends ContainerAwareCommand
                 new InputArgument('localeTo', InputArgument::REQUIRED, 'The locale'),
                 new InputArgument('bundle', InputArgument::REQUIRED, 'The bundle where to load the messages'),
             ))
+            ->addOption('override', null, InputOption::VALUE_NONE, 'If set and file with locateTo exist - it will be replaced with new translated file')
             ->setDescription('translate message files in your project with Google Translate')
         ;
     }
@@ -34,25 +35,41 @@ class GTranslateCommand extends ContainerAwareCommand
             throw new \Exception('Bundle has no translation message!');
         }
 
-        $output->writeln(sprintf('Generating "<info>%s</info>" translation files for "<info>%s</info>"', $input->getArgument('localeTo'), $foundBundle->getName()));
+        $messagesFrom = Yaml::parse($bundleTransPath.'/messages.'.$input->getArgument('localeFrom').'.yml');
+        $messagesTo = Yaml::parse($bundleTransPath.'/messages.'.$input->getArgument('localeTo').'.yml');
 
-        $array = Yaml::parse($bundleTransPath.'/messages.'.$input->getArgument('localeFrom').'.yml');
+        //If override - translate all message again, even if it had been translated
+        if ($input->getOption('override')) {
+            $arrayDiff = $messagesFrom;
+        } else {
+            $arrayDiff = $this->array_diff_key_recursive($messagesFrom, $messagesTo);
+        }
 
-        $count = count($array, COUNT_RECURSIVE);
+        //If nothing to translate - exit
+        if (!$count = count($arrayDiff, COUNT_RECURSIVE)) {
+            $output->writeln('Nothing to translate!');
+            exit;
+        }
+
         $this->progress = $this->getHelperSet()->get('progress');
         $this->progress->start($output, $count);
 
-        $array = $this->translateArray($array, $input->getArgument('localeFrom'), $input->getArgument('localeTo'));
+        $translatedArray = $this->translateArray($arrayDiff, $input->getArgument('localeFrom'), $input->getArgument('localeTo'));
+
+        if ($input->getOption('override') || !is_array($messagesTo)) {
+            $messagesTo = $translatedArray;
+        } else {
+            $messagesTo = array_merge_recursive($translatedArray, $messagesTo);
+        }
 
         $this->progress->finish();
 
-        $file = $bundleTransPath.'/messages.'.$input->getArgument('localeTo').'.yml';
-
-
         $output->writeln(sprintf('Creating "<info>%s</info>" file', 'messages.'.$input->getArgument('localeTo').'.yml'));
-        file_put_contents($file, Yaml::dump($array, 100500));
 
-        $output->writeln(sprintf('Translate is success!'));
+        $file = $bundleTransPath.'/messages.'.$input->getArgument('localeTo').'.yml';
+        file_put_contents($file, Yaml::dump($messagesTo, 100500));
+
+        $output->writeln('Translate is success!');
     }
 
     /**
@@ -79,5 +96,22 @@ class GTranslateCommand extends ContainerAwareCommand
         }
 
         return $array;
+    }
+
+    public function array_diff_key_recursive($a1, $a2) {
+        if (is_array($a2)) {
+            $r = array_diff_key($a1, $a2);
+        }
+        else {
+            return $a1;
+        }
+
+        foreach($a1 as $k => $v) {
+            if (is_array($v)) {
+                $r[$k] = $this->array_diff_key_recursive($a1[$k], $a2[$k]);
+                if (is_array($r[$k]) && count($r[$k])==0) unset($r[$k]);
+            }
+        }
+        return $r;
     }
 }

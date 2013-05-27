@@ -45,7 +45,9 @@ class GTranslateCommandTest extends WebTestCase
             'localeFrom' => 'en',
             'localeTo' => 'ru',
             'bundle' => 'ExerciseGTranslateBundle',
-        ));
+            '--override' => true
+            )
+        );
 
         $actualArray = $this->getArrayFromMessageBundle('ExerciseGTranslateBundle', 'ru');
 
