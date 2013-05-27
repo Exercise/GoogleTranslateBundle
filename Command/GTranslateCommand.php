@@ -29,20 +29,20 @@ class GTranslateCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $foundBundle = $this->getApplication()->getKernel()->getBundle($input->getArgument('bundle'));
-        $bundleTransPath = $foundBundle->getPath().'/Resources/translations';
+        $basePath = $foundBundle->getPath().'/Resources/translations';
 
-        if (!is_dir($bundleTransPath)) {
+        if (!is_dir($basePath)) {
             throw new \Exception('Bundle has no translation message!');
         }
 
-        $messagesFrom = Yaml::parse($bundleTransPath.'/messages.'.$input->getArgument('localeFrom').'.yml');
-        $messagesTo = Yaml::parse($bundleTransPath.'/messages.'.$input->getArgument('localeTo').'.yml');
+        $messagesFrom = Yaml::parse(sprintf("%s/messages.%s.yml", $basePath, $input->getArgument('localeFrom')));
+        $messagesTo = Yaml::parse(sprintf("%s/messages.%s.yml", $basePath, $input->getArgument('localeTo')));
 
         //If override - translate all message again, even if it had been translated
         if ($input->getOption('override')) {
             $arrayDiff = $messagesFrom;
         } else {
-            $arrayDiff = $this->array_diff_key_recursive($messagesFrom, $messagesTo);
+            $arrayDiff = $this->arrayDiffKeyRecursive($messagesFrom, $messagesTo);
         }
 
         //If nothing to translate - exit
@@ -66,7 +66,7 @@ class GTranslateCommand extends ContainerAwareCommand
 
         $output->writeln(sprintf('Creating "<info>%s</info>" file', 'messages.'.$input->getArgument('localeTo').'.yml'));
 
-        $file = $bundleTransPath.'/messages.'.$input->getArgument('localeTo').'.yml';
+        $file = $basePath.'/messages.'.$input->getArgument('localeTo').'.yml';
         file_put_contents($file, Yaml::dump($messagesTo, 100500));
 
         $output->writeln('Translate is success!');
@@ -98,20 +98,26 @@ class GTranslateCommand extends ContainerAwareCommand
         return $array;
     }
 
-    public function array_diff_key_recursive($a1, $a2) {
+    public function arrayDiffKeyRecursive($a1, $a2) {
+
         if (is_array($a2)) {
             $r = array_diff_key($a1, $a2);
-        }
-        else {
+        } else {
+
             return $a1;
         }
 
         foreach($a1 as $k => $v) {
+
             if (is_array($v)) {
-                $r[$k] = $this->array_diff_key_recursive($a1[$k], $a2[$k]);
-                if (is_array($r[$k]) && count($r[$k])==0) unset($r[$k]);
+                $r[$k] = $this->arrayDiffKeyRecursive($a1[$k], $a2[$k]);
+
+                if (is_array($r[$k]) && count($r[$k]) == 0) {
+                    unset($r[$k]);
+                }
             }
         }
+
         return $r;
     }
 }
