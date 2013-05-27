@@ -1,0 +1,11 @@
+food:
+    title: '%tasty% Еды'
+    fruit:
+        apple: '%green% Яблок'
+        lemon: '%yellow% Лимоном'
+        orange: оранжевый
+        banana: '%yellow% Банан'
+    vegetable:
+        eggplant: баклажан
+        potato: картофель
+        cabbage: капуста

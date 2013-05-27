@@ -1,0 +1,11 @@
+food:
+    title: %tasty% food
+    fruit:
+        apple: %green% apple
+        lemon: %yellow% lemon
+        orange: orange
+        banana: %yellow% banana
+    vegetable:
+        eggplant: eggplant
+        potato: potato
+        cabbage: cabbage
