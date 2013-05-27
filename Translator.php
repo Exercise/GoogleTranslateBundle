@@ -4,7 +4,6 @@ namespace Exercise\GTranslateBundle;
 use Guzzle\Http\Client;
 use Guzzle\Common\Collection;
 use Exercise\GTranslateBundle\ParametersEscaper;
-use Symfony\Component\HttpKernel\Kernel;
 
 class Translator
 {
