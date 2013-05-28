@@ -40,7 +40,7 @@ Enter your private api key in configuration
 
 ```yml
 # app/config/config.yml
-exercise_g_translate:
+exercise_google_translate:
     api_key: your_api_key
 ```
 
@@ -55,7 +55,7 @@ public function indexAction() {
 
     ...
 
-    $translator = $this->get('exercise_g_translate.translator');
+    $translator = $this->get('exercise_google_translate.translator');
     $translatedString = $translator->translateString('Hello World!', 'en', 'fr');
 
     // Bonjour tout le monde!
