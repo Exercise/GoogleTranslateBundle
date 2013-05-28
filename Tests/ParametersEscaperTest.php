@@ -1,7 +1,7 @@
 <?php
-namespace Exercise\GTranslateBundle\Tests;
+namespace ExerciseGoogleTranslateBundle\Tests;
 
-use Exercise\GTranslateBundle\ParametersEscaper;
+use Exercise\GoogleTranslateBundle\ParametersEscaper;
 
 class ParametersEscaperTest extends \PHPUnit_Framework_TestCase
 {

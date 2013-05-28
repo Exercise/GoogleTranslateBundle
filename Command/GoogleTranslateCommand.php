@@ -1,5 +1,5 @@
 <?php
-namespace Exercise\GTranslateBundle\Command;
+namespace Exercise\GoogleTranslateBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 
-class GTranslateCommand extends ContainerAwareCommand
+class GoogleTranslateCommand extends ContainerAwareCommand
 {
     protected $progress;
 
@@ -82,7 +82,7 @@ class GTranslateCommand extends ContainerAwareCommand
      */
     public function translateArray($array, $langFrom, $langTo)
     {
-        $translator = $this->getContainer()->get('exercise_g_translate.translator');
+        $translator = $this->getContainer()->get('exercise_google_translate.translator');
 
         foreach ($array as $key => $value) {
 

@@ -1,9 +1,9 @@
 <?php
-namespace Exercise\GTranslateBundle;
+namespace Exercise\GoogleTranslateBundle;
 
 use Guzzle\Http\Client;
 use Guzzle\Common\Collection;
-use Exercise\GTranslateBundle\ParametersEscaper;
+use Exercise\GoogleTranslateBundle\ParametersEscaper;
 
 class Translator
 {

@@ -1,5 +1,5 @@
 <?php
-namespace Exercise\GTranslateBundle;
+namespace Exercise\GoogleTranslateBundle;
 
 class ParametersEscaper
 {

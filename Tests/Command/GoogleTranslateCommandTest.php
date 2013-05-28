@@ -1,13 +1,13 @@
 <?php
-namespace Exercise\GTranslateBundle\Tests\Command;
+namespace Exercise\GoogleTranslateBundle\Tests\Command;
 
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Exercise\GTranslateBundle\Command\GTranslateCommand;
+use Exercise\GoogleTranslateBundle\Command\GoogleTranslateCommand;
 use Symfony\Component\Yaml\Yaml;
 
-class GTranslateCommandTest extends WebTestCase
+class GoogleTranslateCommandTest extends WebTestCase
 {
     protected $expectedArray = array
     (
@@ -36,7 +36,7 @@ class GTranslateCommandTest extends WebTestCase
         $kernel->boot();
 
         $application = new Application($kernel);
-        $application->add(new GTranslateCommand());
+        $application->add(new GoogleTranslateCommand());
 
         $command = $application->find('gtranslate:translate');
         $commandTester = new CommandTester($command);
@@ -44,12 +44,12 @@ class GTranslateCommandTest extends WebTestCase
             'command' => $command->getName(),
             'localeFrom' => 'en',
             'localeTo' => 'ru',
-            'bundle' => 'ExerciseGTranslateBundle',
+            'bundle' => 'ExerciseGoogleTranslateBundle',
             '--override' => true
             )
         );
 
-        $actualArray = $this->getArrayFromMessageBundle('ExerciseGTranslateBundle', 'ru');
+        $actualArray = $this->getArrayFromMessageBundle('ExerciseGoogleTranslateBundle', 'ru');
 
         $this->assertEquals($this->expectedArray, $actualArray);
     }

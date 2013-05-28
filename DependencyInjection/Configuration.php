@@ -1,6 +1,6 @@
 <?php
 
-namespace Exercise\GTranslateBundle\DependencyInjection;
+namespace Exercise\GoogleTranslateBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -18,7 +18,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('exercise_g_translate');
+        $rootNode = $treeBuilder->root('exercise_google_translate');
 
         $rootNode
             ->children()

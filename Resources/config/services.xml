@@ -5,17 +5,17 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="exercise_g_translate.translator.class">Exercise\GTranslateBundle\Translator</parameter>
-        <parameter key="exercise_g_translate.parameters_escaper.class">Exercise\GTranslateBundle\ParametersEscaper</parameter>
+        <parameter key="exercise_google_translate.translator.class">Exercise\GoogleTranslateBundle\Translator</parameter>
+        <parameter key="exercise_google_translate.parameters_escaper.class">Exercise\GoogleTranslateBundle\ParametersEscaper</parameter>
     </parameters>
 
     <services>
-        <service id="exercise_g_translate.translator" class="%exercise_g_translate.translator.class%">
-            <argument>%exercise_g_translate.api_key%</argument>
-            <argument type="service" id="exercise_g_translate.parameters_escaper" />
+        <service id="exercise_google_translate.translator" class="%exercise_google_translate.translator.class%">
+            <argument>%exercise_google_translate.api_key%</argument>
+            <argument type="service" id="exercise_google_translate.parameters_escaper" />
             <argument>%kernel.environment%</argument>
         </service>
-        <service id="exercise_g_translate.parameters_escaper" class="%exercise_g_translate.parameters_escaper.class%">
+        <service id="exercise_google_translate.parameters_escaper" class="%exercise_google_translate.parameters_escaper.class%">
         </service>
     </services>
     
