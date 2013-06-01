@@ -22,14 +22,13 @@ class GoogleTranslateCommand extends ContainerAwareCommand
                 new InputArgument('bundle', InputArgument::REQUIRED, 'The bundle where to load the messages'),
             ))
             ->addOption('override', null, InputOption::VALUE_NONE, 'If set and file with locateTo exist - it will be replaced with new translated file')
-            ->setDescription('translate message files in your project with Google Translate')
-        ;
+            ->setDescription('translate message files in your project with Google Translate');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $foundBundle = $this->getApplication()->getKernel()->getBundle($input->getArgument('bundle'));
-        $basePath = $foundBundle->getPath().'/Resources/translations';
+        $basePath = $foundBundle->getPath() . '/Resources/translations';
 
         if (!is_dir($basePath)) {
             throw new \Exception('Bundle has no translation message!');
@@ -64,9 +63,9 @@ class GoogleTranslateCommand extends ContainerAwareCommand
 
         $this->progress->finish();
 
-        $output->writeln(sprintf('Creating "<info>%s</info>" file', 'messages.'.$input->getArgument('localeTo').'.yml'));
+        $output->writeln(sprintf('Creating "<info>%s</info>" file', 'messages.' . $input->getArgument('localeTo') . '.yml'));
 
-        $file = $basePath.'/messages.'.$input->getArgument('localeTo').'.yml';
+        $file = $basePath . '/messages.' . $input->getArgument('localeTo') . '.yml';
         file_put_contents($file, Yaml::dump($messagesTo, 100500));
 
         $output->writeln('Translate is success!');
@@ -98,26 +97,32 @@ class GoogleTranslateCommand extends ContainerAwareCommand
         return $array;
     }
 
-    public function arrayDiffKeyRecursive($a1, $a2) {
-
-        if (is_array($a2)) {
-            $r = array_diff_key($a1, $a2);
+    /**
+     * @param $array1
+     * @param $array2
+     * @return array
+     */
+    protected function arrayDiffKeyRecursive($array1, $array2)
+    {
+        if (is_array($array2)) {
+            $resultArray = array_diff_key($array1, $array2);
         } else {
-
-            return $a1;
+            return $array1;
         }
 
-        foreach($a1 as $k => $v) {
+        foreach ($array1 as $key => $value) {
 
-            if (is_array($v)) {
-                $r[$k] = $this->arrayDiffKeyRecursive($a1[$k], $a2[$k]);
+            if (is_array($value)) {
+                $resultArray[$key] = $this->arrayDiffKeyRecursive($array1[$key], $array2[$key]);
 
-                if (is_array($r[$k]) && count($r[$k]) == 0) {
-                    unset($r[$k]);
+                if (is_array($resultArray[$key]) && count($resultArray[$key]) == 0) {
+                    unset($resultArray[$key]);
                 }
             }
         }
 
-        return $r;
+        return $resultArray;
     }
+
+
 }
