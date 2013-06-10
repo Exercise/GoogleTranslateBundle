@@ -59,7 +59,8 @@ class Translator
         $responseArray = $response->json();
         $translatedString = $responseArray['data']['translations']['0']['translatedText'];
 
-        $string = $this->parametersEscaper->unEscapeParameters($translatedString);
+        $string = html_entity_decode($translatedString);
+        $string = $this->parametersEscaper->unEscapeParameters($string);
 
         return $string;
     }
