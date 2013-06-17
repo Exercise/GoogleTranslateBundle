@@ -60,6 +60,7 @@ class Translator
         $translatedString = $responseArray['data']['translations']['0']['translatedText'];
 
         $string = html_entity_decode($translatedString);
+        $string = str_replace('&#39;', '"', $string);
         $string = $this->parametersEscaper->unEscapeParameters($string);
 
         return $string;
