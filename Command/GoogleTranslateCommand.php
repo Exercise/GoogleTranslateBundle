@@ -112,8 +112,10 @@ class GoogleTranslateCommand extends ContainerAwareCommand
 
         foreach ($array1 as $key => $value) {
 
-            if (is_array($value)) {
-                $resultArray[$key] = $this->arrayDiffKeyRecursive($array1[$key], $array2[$key]);
+            if (!isset($array2[$key])) {
+                $resultArray[$key] = $array1[$key];
+            } elseif (is_array($value)) {
+                $resultArray[$key] = $this->arrayDiffKeyRecursive( $array1[$key], $array2[$key]);
 
                 if (is_array($resultArray[$key]) && count($resultArray[$key]) == 0) {
                     unset($resultArray[$key]);
