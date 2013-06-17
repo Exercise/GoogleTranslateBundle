@@ -34,39 +34,50 @@ class GoogleTranslateCommand extends ContainerAwareCommand
             throw new \Exception('Bundle has no translation message!');
         }
 
-        $messagesFrom = Yaml::parse(sprintf("%s/messages.%s.yml", $basePath, $input->getArgument('localeFrom')));
-        $messagesTo = Yaml::parse(sprintf("%s/messages.%s.yml", $basePath, $input->getArgument('localeTo')));
+        if ($handle = opendir($basePath)) {
 
-        //If override - translate all message again, even if it had been translated
-        if ($input->getOption('override')) {
-            $arrayDiff = $messagesFrom;
-        } else {
-            $arrayDiff = $this->arrayDiffKeyRecursive($messagesFrom, $messagesTo);
+            while (false !== ($messageFromFileName = readdir($handle))) {
+                //ToDo make handler for other formats (xml, php)
+                if (false !== strpos($messageFromFileName, $input->getArgument('localeFrom').'.yml')) {
+
+                    $messageToFileName = str_replace($input->getArgument('localeFrom'), $input->getArgument('localeTo'), $messageFromFileName);
+
+                    $messagesFrom = Yaml::parse(sprintf("%s/$messageFromFileName", $basePath));
+                    $messagesTo   = Yaml::parse(sprintf("%s/$messageToFileName", $basePath));
+
+                    //If override - translate all message again, even if it had been translated
+                    if ($input->getOption('override')) {
+                        $arrayDiff = $messagesFrom;
+                    } else {
+                        $arrayDiff = $this->arrayDiffKeyRecursive($messagesFrom, $messagesTo);
+                    }
+
+                    //If nothing to translate - exit
+                    if (!$count = count($arrayDiff, COUNT_RECURSIVE)) {
+                        $output->writeln('Nothing to translate!');
+                        continue;
+                    }
+
+                    $this->progress = $this->getHelperSet()->get('progress');
+                    $this->progress->start($output, $count);
+
+                    $translatedArray = $this->translateArray($arrayDiff, $input->getArgument('localeFrom'), $input->getArgument('localeTo'));
+
+                    if ($input->getOption('override') || !is_array($messagesTo)) {
+                        $messagesTo = $translatedArray;
+                    } else {
+                        $messagesTo = array_merge_recursive($translatedArray, $messagesTo);
+                    }
+
+                    $this->progress->finish();
+
+                    $output->writeln(sprintf('Creating "<info>%s</info>" file', $messageToFileName));
+
+                    $file = $basePath . '/' . $messageToFileName;
+                    file_put_contents($file, Yaml::dump($messagesTo, 100500));
+                }
+            }
         }
-
-        //If nothing to translate - exit
-        if (!$count = count($arrayDiff, COUNT_RECURSIVE)) {
-            $output->writeln('Nothing to translate!');
-            exit;
-        }
-
-        $this->progress = $this->getHelperSet()->get('progress');
-        $this->progress->start($output, $count);
-
-        $translatedArray = $this->translateArray($arrayDiff, $input->getArgument('localeFrom'), $input->getArgument('localeTo'));
-
-        if ($input->getOption('override') || !is_array($messagesTo)) {
-            $messagesTo = $translatedArray;
-        } else {
-            $messagesTo = array_merge_recursive($translatedArray, $messagesTo);
-        }
-
-        $this->progress->finish();
-
-        $output->writeln(sprintf('Creating "<info>%s</info>" file', 'messages.' . $input->getArgument('localeTo') . '.yml'));
-
-        $file = $basePath . '/messages.' . $input->getArgument('localeTo') . '.yml';
-        file_put_contents($file, Yaml::dump($messagesTo, 100500));
 
         $output->writeln('Translate is success!');
     }
@@ -98,8 +109,8 @@ class GoogleTranslateCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param $array1
-     * @param $array2
+     * @param $array1 array messagesFrom
+     * @param $array2 array messagesTo
      * @return array
      */
     protected function arrayDiffKeyRecursive($array1, $array2)
@@ -125,6 +136,4 @@ class GoogleTranslateCommand extends ContainerAwareCommand
 
         return $resultArray;
     }
-
-
 }
