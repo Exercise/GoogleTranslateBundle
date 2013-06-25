@@ -74,6 +74,7 @@ class GoogleTranslateCommand extends ContainerAwareCommand
                     $output->writeln(sprintf('Creating "<info>%s</info>" file', $messageToFileName));
 
                     $file = $basePath . '/' . $messageToFileName;
+                    ksort($messagesTo);
                     file_put_contents($file, Yaml::dump($messagesTo, 100500));
                 }
             }
