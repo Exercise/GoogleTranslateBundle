@@ -74,7 +74,7 @@ class GoogleTranslateCommand extends ContainerAwareCommand
                     $output->writeln(sprintf('Creating "<info>%s</info>" file', $messageToFileName));
 
                     $file = $basePath . '/' . $messageToFileName;
-                    ksort($messagesTo);
+                    $messagesTo = $this->ksortRecursive($messagesTo);
                     file_put_contents($file, Yaml::dump($messagesTo, 100500));
                 }
             }
@@ -136,5 +136,18 @@ class GoogleTranslateCommand extends ContainerAwareCommand
         }
 
         return $resultArray;
+    }
+
+    protected function ksortRecursive(array $array)
+    {
+        foreach ($array as $key => $nestedArray) {
+            if (is_array($nestedArray) && !empty($nestedArray)) {
+                $array[$key] = $this->ksortRecursive($nestedArray);
+            }
+        }
+
+        ksort($array);
+
+        return $array;
     }
 }
