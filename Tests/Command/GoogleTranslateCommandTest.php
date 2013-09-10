@@ -5,10 +5,13 @@ use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Exercise\GoogleTranslateBundle\Command\GoogleTranslateCommand;
+use Exercise\GoogleTranslateBundle\Tests\App\AppKernel;
 use Symfony\Component\Yaml\Yaml;
 
 class GoogleTranslateCommandTest extends WebTestCase
 {
+    static $class = 'Exercise\GoogleTranslateBundle\Tests\App\AppKernel';
+
     protected $expectedArray = array
     (
         'food' => array
