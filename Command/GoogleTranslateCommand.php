@@ -91,7 +91,7 @@ class GoogleTranslateCommand extends ContainerAwareCommand
      * @param $langTo string
      * @return array
      */
-    public function translateArray($array, $langFrom, $langTo)
+    public function translateArray(array $array, $langFrom, $langTo)
     {
         $translator = $this->getContainer()->get('exercise_google_translate.translator');
 
