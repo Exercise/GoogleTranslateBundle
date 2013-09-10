@@ -21,13 +21,19 @@ class GoogleTranslateCommandTest extends WebTestCase
                     'orange' => 'оранжевый',
                     'banana' => '%yellow% Банан',
                 ),
-            'vegetable' => array
+              'vegetable' => array
                 (
                     'eggplant' => 'баклажан',
                     'potato' => 'картофель',
                     'cabbage' => 'капуста',
                 ),
         ),
+        'pluralization' => array
+        (
+//            ToDo: this must be fixed
+            'one' => '{0} Там нет яблоки | [20, Inf ] Есть много яблок | Существует одно яблоко | a_few : Есть яблоки % % % %',
+            'two' => '{0} Там нет яблоки | {1} Существует одно яблоко | ] 1,19 ] Есть яблоки % % % % | [20, Inf ] Есть много яблок',
+        )
     );
 
     public function testExecute()

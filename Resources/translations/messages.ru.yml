@@ -1,11 +1,14 @@
 food:
-    title: '%tasty% Еды'
     fruit:
         apple: '%green% Яблок'
+        banana: '%yellow% Банан'
         lemon: '%yellow% Лимоном'
         orange: оранжевый
-        banana: '%yellow% Банан'
+    title: '%tasty% Еды'
     vegetable:
+        cabbage: капуста
         eggplant: баклажан
         potato: картофель
-        cabbage: капуста
+pluralization:
+    one: '{0} Там нет яблоки | [20, Inf ] Есть много яблок | Существует одно яблоко | a_few : Есть яблоки % % % %'
+    two: '{0} Там нет яблоки | {1} Существует одно яблоко | ] 1,19 ] Есть яблоки % % % % | [20, Inf ] Есть много яблок'
