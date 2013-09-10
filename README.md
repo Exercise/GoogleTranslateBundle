@@ -1,4 +1,4 @@
-GoogleTranslateBundle [![Build Status](https://travis-ci.org/spolischook/SimpleShop.png?branch=master)](https://travis-ci.org/spolischook/SimpleShop)
+GoogleTranslateBundle [![Build Status](https://travis-ci.org/spolischook/GoogleTranslateBundle.png?branch=master)](https://travis-ci.org/spolischook/GoogleTranslateBundle)
 ===========
 
 About Bundle
