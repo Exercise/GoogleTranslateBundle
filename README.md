@@ -56,13 +56,12 @@ public function indexAction() {
     ...
 
     $translator = $this->get('exercise_google_translate.translator');
-    $translatedString = $translator->translateString('Hello World!', 'en', 'fr');
+    $translatedString = $translator->translate('Hello World!', 'en', 'fr');
 
     // Bonjour tout le monde!
     return new Response($translatedString);
 }
 ```
-
 or you can use console command to translate messages
 
 ```bash
