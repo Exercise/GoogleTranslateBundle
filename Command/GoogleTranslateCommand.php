@@ -100,7 +100,7 @@ class GoogleTranslateCommand extends ContainerAwareCommand
             if (is_array($value)) {
                 $array[$key] = $this->translateArray($value, $langFrom, $langTo);
             } else {
-                $array[$key] = $translator->translateString($value, $langFrom, $langTo);
+                $array[$key] = $translator->translate($value, $langFrom, $langTo);
             }
 
             $this->progress->advance();
