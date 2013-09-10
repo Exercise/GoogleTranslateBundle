@@ -4,6 +4,7 @@ namespace Exercise\GoogleTranslateBundle;
 use Guzzle\Http\Client;
 use Guzzle\Common\Collection;
 use Exercise\GoogleTranslateBundle\ParametersEscaper;
+use Symfony\Component\Translation\Interval;
 
 class Translator
 {
@@ -26,6 +27,28 @@ class Translator
 
         $this->client = new Client();
         $this->client->setDefaultHeaders($headers);
+    }
+
+    public function translate($message, $langFrom, $langTo)
+    {
+        if ($this->isPluralization($message)) {
+            $parts = explode('|', $message);
+            $pluralizationMessages = array();
+
+            foreach ($parts as $part) {
+                if (preg_match('/^(?P<interval>'.Interval::getIntervalRegexp().')\s*(?P<message>.*?)$/x', $part, $matches)) {
+                    $pluralizationMessages[] = $matches['interval'] . $this->translateString($matches['message'], $langFrom, $langTo);
+                } elseif (preg_match('/(^\w+\:)(.*?$)/', $part, $matches)) {
+                    $pluralizationMessages[] = $matches[1] . $this->translateString($matches[2], $langFrom, $langTo);
+                } else {
+                    $pluralizationMessages[] = $this->translateString($part, $langFrom, $langTo);
+                }
+            }
+
+            return implode('|', $pluralizationMessages);
+        } else {
+            return $this->translateString($message, $langFrom, $langTo);
+        }
     }
 
     /**
@@ -90,5 +113,10 @@ class Translator
         $string = $this->parametersEscaper->unEscapeParameters($translatedString);
 
         return $string;
+    }
+
+    protected function isPluralization($string)
+    {
+        return count(explode('|', $string)) > 1 ? true : false;
     }
 }
