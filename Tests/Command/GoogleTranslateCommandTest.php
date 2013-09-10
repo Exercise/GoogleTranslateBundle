@@ -16,13 +16,13 @@ class GoogleTranslateCommandTest extends WebTestCase
     (
         'food' => array
         (
-            'title' => '%tasty% Еды',
+            'title' => '%tasty% еду',
             'fruit' => array
                 (
-                    'apple' => '%green% Яблок',
-                    'lemon' => '%yellow% Лимоном',
+                    'apple' => '%green% яблоко',
+                    'lemon' => '%yellow% лимона',
                     'orange' => 'оранжевый',
-                    'banana' => '%yellow% Банан',
+                    'banana' => '%yellow% банан',
                 ),
               'vegetable' => array
                 (
@@ -33,9 +33,8 @@ class GoogleTranslateCommandTest extends WebTestCase
         ),
         'pluralization' => array
         (
-//            ToDo: this must be fixed
-            'one' => '{0} Там нет яблоки | [20, Inf ] Есть много яблок | Существует одно яблоко | a_few : Есть яблоки % % % %',
-            'two' => '{0} Там нет яблоки | {1} Существует одно яблоко | ] 1,19 ] Есть яблоки % % % % | [20, Inf ] Есть много яблок',
+            'one' => '{0}Там нет яблок|[20,Inf]Есть много яблок|Существует одно яблоко|a_few:Есть : %count% яблоками',
+            'two' => '{0}Там нет яблок|{1}Существует одно яблоко|]1,19]Есть %count% яблоками|[20,Inf]Есть много яблок',
         )
     );
 
