@@ -9,3 +9,6 @@ food:
         eggplant: eggplant
         potato: potato
         cabbage: cabbage
+pluralization:
+    one: '{0}There are no apples|[20,Inf]There are many apples|There is one apple|a_few:There are %count% apples'
+    two: '{0}There are no apples|{1}There is one apple|]1,19]There are %count% apples|[20,Inf]There are many apples'

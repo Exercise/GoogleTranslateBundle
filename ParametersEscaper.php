@@ -28,7 +28,7 @@ class ParametersEscaper
         $this->iterator = $this->parametersArray->getIterator();
 
         return preg_replace_callback(
-            "|%[\S]*%|",
+            "|NotTranslatedString|",
             array($this, 'unEscapeParametersCallback'),
             $string);
     }
@@ -37,7 +37,7 @@ class ParametersEscaper
     {
         $this->parametersArray->append($matches['0']);
 
-        return '%%%%';
+        return 'NotTranslatedString';
     }
 
     private function unEscapeParametersCallback($matches)

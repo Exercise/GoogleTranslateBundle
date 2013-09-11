@@ -1,0 +1,24 @@
+{
+    "name": "exercise/google-translate-bundle",
+    "type": "symfony-bundle",
+    "description": "This bundle include service for translate with Google Translate and command which translate messages in your Bundles",
+    "keywords": ["Translation"],
+    "homepage": "https://github.com/Exercise/GoogleTranslateBundle",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.2",
+        "symfony/framework-bundle": "~2.2",
+        "symfony/console": "~2.2",
+        "symfony/yaml": "~2.2",
+        "guzzle/guzzle": "3.*"
+    },
+    "require-dev": {
+        "symfony/finder": "~2.0",
+        "symfony/browser-kit": "2.4.*@dev"
+    },
+    "autoload": {
+        "psr-0": { "Exercise\\GoogleTranslateBundle": "" }
+    },
+    "target-dir": "Exercise/GoogleTranslateBundle"
+}
