@@ -1,4 +1,4 @@
-GoogleTranslateBundle [![Build Status](https://travis-ci.org/spolischook/SimpleShop.png?branch=master)](https://travis-ci.org/spolischook/SimpleShop)
+GoogleTranslateBundle [![Build Status](https://travis-ci.org/spolischook/GoogleTranslateBundle.png?branch=master)](https://travis-ci.org/spolischook/GoogleTranslateBundle)
 ===========
 
 About Bundle
@@ -56,13 +56,12 @@ public function indexAction() {
     ...
 
     $translator = $this->get('exercise_google_translate.translator');
-    $translatedString = $translator->translateString('Hello World!', 'en', 'fr');
+    $translatedString = $translator->translate('Hello World!', 'en', 'fr');
 
     // Bonjour tout le monde!
     return new Response($translatedString);
 }
 ```
-
 or you can use console command to translate messages
 
 ```bash
