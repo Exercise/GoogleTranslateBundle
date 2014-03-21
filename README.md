@@ -29,7 +29,7 @@ public function registerBundles()
 {
     $bundles = array(
         // ...
-        new Exercise\Bundle\GoogleTranslateBundle\GoogleTranslateBundle(),
+        new Exercise\GoogleTranslateBundle\ExerciseGoogleTranslateBundle(),
     );
 }
 ```
