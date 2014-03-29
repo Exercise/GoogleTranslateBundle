@@ -40,7 +40,7 @@ class GoogleTranslateCommand extends ContainerAwareCommand
                 //ToDo make handler for other formats (xml, php)
                 if (false !== strpos($messageFromFileName, $input->getArgument('localeFrom').'.yml')) {
 
-                    $messageToFileName = str_replace($input->getArgument('localeFrom'), $input->getArgument('localeTo'), $messageFromFileName);
+                    $messageToFileName = preg_replace("/(.*\.)" .$input->getArgument('localeFrom'). "(\..*)/i", "$1" . $input->getArgument('localeTo') . "$2", $messageFromFileName);
 
                     $messagesFrom = Yaml::parse(sprintf("%s/$messageFromFileName", $basePath));
                     $messagesTo   = Yaml::parse(sprintf("%s/$messageToFileName", $basePath));
