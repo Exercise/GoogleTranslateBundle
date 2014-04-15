@@ -23,6 +23,8 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('api_key')
+                    ->isRequired()
+                    ->cannotBeEmpty()
                     ->info('key for your app https://code.google.com/apis/console/b/0/?pli=1#project:247987860421:access')
                 ->end()
             ->end()
