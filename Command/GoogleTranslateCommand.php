@@ -19,67 +19,105 @@ class GoogleTranslateCommand extends ContainerAwareCommand
             ->setDefinition(array(
                 new InputArgument('localeFrom', InputArgument::REQUIRED, 'The locale'),
                 new InputArgument('localeTo', InputArgument::REQUIRED, 'The locale'),
-                new InputArgument('bundle', InputArgument::REQUIRED, 'The bundle where to load the messages'),
+                new InputArgument('bundles', InputArgument::OPTIONAL, 'Import translations for this specific bundles (comma separated).'),
             ))
             ->addOption('override', null, InputOption::VALUE_NONE, 'If set and file with locateTo exist - it will be replaced with new translated file')
+            ->addOption('domains', 'd', InputOption::VALUE_OPTIONAL, 'Only imports files for given domains (comma separated).')
             ->setDescription('translate message files in your project with Google Translate');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $foundBundle = $this->getApplication()->getKernel()->getBundle($input->getArgument('bundle'));
-        $basePath = $foundBundle->getPath() . '/Resources/translations';
 
-        if (!is_dir($basePath)) {
-            throw new \Exception('Bundle has no translation message!');
+        $bundles = $input->getArgument('bundles') ? explode(',', $input->getArgument('bundles')) : array();
+        $domains = $input->getOption('domains') ? explode(',', $input->getOption('domains')) : array();
+
+        $foundBundles = array();
+        if ($bundles) {
+            foreach ($bundles as $bundle) {
+                array_push($foundBundles,$this->getApplication()->getKernel()->getBundle($bundle)->getPath());
+            }
+        } else {
+            $bundles = $this->getApplication()->getKernel()->getBundles();
+            foreach ($bundles as $bundle)
+            {
+                array_push($foundBundles, $bundle->getPath());
+            }
+            array_push($foundBundles, $this->getApplication()->getKernel()->getRootDir());
         }
 
-        if ($handle = opendir($basePath)) {
+        //ToDo make handler for other formats (xml, php)
 
-            while (false !== ($messageFromFileName = readdir($handle))) {
-                //ToDo make handler for other formats (xml, php)
-                if (false !== strpos($messageFromFileName, $input->getArgument('localeFrom').'.yml')) {
+        $messagesFromFileName = array();
 
-                    $messageToFileName = preg_replace("/(.*\.)" .$input->getArgument('localeFrom'). "(\..*)/i", "$1" . $input->getArgument('localeTo') . "$2", $messageFromFileName);
-
-                    $messagesFrom = Yaml::parse(sprintf("%s/$messageFromFileName", $basePath));
-                    $messagesTo   = Yaml::parse(sprintf("%s/$messageToFileName", $basePath));
-
-                    //If override - translate all message again, even if it had been translated
-                    if ($input->getOption('override')) {
-                        $arrayDiff = $messagesFrom;
-                    } else {
-                        $arrayDiff = $this->arrayDiffKeyRecursive($messagesFrom, $messagesTo);
+        foreach ($foundBundles as $foundBundle)
+        {
+            if (is_dir($basePath = $foundBundle.'/Resources/translations')) {
+                $output->writeln('Bundle: '.$basePath);
+                if ($domains) {
+                    foreach ($domains as $domain) {
+                        $handle = opendir($basePath) ;
+                        while (false !== ($messageFromFileName = readdir($handle))) {
+                            if ($messageFromFileName == $domain.'.'.$input->getArgument('localeFrom').'.yml') {
+                                array_push($messagesFromFileName, $basePath.'/'.$messageFromFileName);
+                            }
+                        }
                     }
-
-                    //If nothing to translate - exit
-                    if (!$count = count($arrayDiff, COUNT_RECURSIVE)) {
-                        $output->writeln('Nothing to translate!');
-                        continue;
+                } else {
+                    $handle = opendir($basePath) ;
+                    while (false !== ($messageFromFileName = readdir($handle))) {
+                        if (false !== strpos($messageFromFileName, $input->getArgument('localeFrom').'.yml')) {
+                            array_push($messagesFromFileName, $basePath.'/'.$messageFromFileName);
+                        }
                     }
-
-                    $this->progress = $this->getHelperSet()->get('progress');
-                    $this->progress->start($output, $count);
-
-                    $translatedArray = $this->translateArray($arrayDiff, $input->getArgument('localeFrom'), $input->getArgument('localeTo'));
-
-                    if ($input->getOption('override') || !is_array($messagesTo)) {
-                        $messagesTo = $translatedArray;
-                    } else {
-                        $messagesTo = array_merge_recursive($translatedArray, $messagesTo);
-                    }
-
-                    $this->progress->finish();
-
-                    $output->writeln(sprintf('Creating "<info>%s</info>" file', $messageToFileName));
-
-                    $file = $basePath . '/' . $messageToFileName;
-                    $messagesTo = $this->ksortRecursive($messagesTo);
-                    file_put_contents($file, Yaml::dump($messagesTo, 100500));
                 }
             }
         }
+        $output->writeln('');
 
+        foreach ($messagesFromFileName as $messageFromFileName) {
+
+            $output->writeln('Parse ' . $messageFromFileName . ' file');
+            $messageToFileName = preg_replace("/(.*\.)" .$input->getArgument('localeFrom'). "(\..*)/i", "$1" . $input->getArgument('localeTo') . "$2", $messageFromFileName);
+
+            $messagesFrom = Yaml::parse($messageFromFileName);
+            $messagesTo   = Yaml::parse($messageToFileName);
+
+            //If override - translate all message again, even if it had been translated
+            if ($input->getOption('override')) {
+                $arrayDiff = $messagesFrom;
+            } else {
+                $arrayDiff = $this->arrayDiffKeyRecursive($messagesFrom, $messagesTo);
+            }
+
+            //If nothing to translate - exit
+            if (!$count = count($arrayDiff, COUNT_RECURSIVE)) {
+                $output->writeln('   > Nothing to translate!');
+                continue;
+            }
+
+            $this->progress = $this->getHelperSet()->get('progress');
+            $this->progress->start($output, $count);
+
+            $translatedArray = $this->translateArray($arrayDiff, $input->getArgument('localeFrom'), $input->getArgument('localeTo'));
+
+            if ($input->getOption('override') || !is_array($messagesTo)) {
+                $messagesTo = $translatedArray;
+            } else {
+                $messagesTo = array_merge_recursive($translatedArray, $messagesTo);
+            }
+
+            $this->progress->finish();
+
+            $output->writeln(sprintf('   > Creating "<info>%s</info>" file', $messageToFileName));
+
+            $file = dirname($messageFromFileName) . '/' . basename($messageToFileName);
+            $messagesTo = $this->ksortRecursive($messagesTo);
+            file_put_contents($file, Yaml::dump($messagesTo, 100500));
+
+        }
+
+        $output->writeln('');
         $output->writeln('Translate is success!');
     }
 
