@@ -2,7 +2,7 @@
     "name": "exercise/google-translate-bundle",
     "type": "symfony-bundle",
     "description": "This bundle include service for translate with Google Translate and command which translate messages in your Bundles",
-    "keywords": ["Translation"],
+    "keywords": ["translation","google","translate","google-translate","symfony","api","php"],
     "homepage": "https://github.com/Exercise/GoogleTranslateBundle",
     "license": "MIT",
     "minimum-stability": "dev",
