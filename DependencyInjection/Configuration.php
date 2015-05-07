@@ -20,13 +20,25 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('exercise_google_translate');
 
+        $yamlIndent = array(2, 4);
+
         $rootNode
             ->children()
+
                 ->scalarNode('api_key')
                     ->isRequired()
                     ->cannotBeEmpty()
                     ->info('key for your app https://code.google.com/apis/console/b/0/?pli=1#project:247987860421:access')
                 ->end()
+
+                ->scalarNode('yaml_indent')
+                    ->cannotBeEmpty()
+                    ->defaultValue(4)
+                    ->validate()
+                        ->ifNotInArray($yamlIndent)
+                        ->thenInvalid('The input type "%s" is not supported. Please use one of the following values: '.implode(', ', $yamlIndent))
+                ->end()
+
             ->end()
         ;
 
