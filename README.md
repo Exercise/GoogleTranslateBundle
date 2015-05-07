@@ -1,4 +1,4 @@
-GoogleTranslateBundle [![Build Status](https://travis-ci.org/spolischook/GoogleTranslateBundle.png?branch=master)](https://travis-ci.org/spolischook/GoogleTranslateBundle)
+GoogleTranslateBundle [![Build Status](https://travis-ci.org/spolischook/GoogleTranslateBundle.png?branch=master)](https://travis-ci.org/spolischook/GoogleTranslateBundle)[![knpbundles.com](http://knpbundles.com/Exercise/GoogleTranslateBundle/badge-short)](http://knpbundles.com/Exercise/GoogleTranslateBundle)
 ===========
 
 About Bundle
