@@ -75,4 +75,7 @@ If you have found bug, please create an issue.
 
 License
 -------
-What?
+This bundle is under the MIT license. See the complete license in LICENSE.md
+
+[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://packagist.org/packages/exercise/google-translate-bundle)
+
