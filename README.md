@@ -62,10 +62,28 @@ public function indexAction() {
     return new Response($translatedString);
 }
 ```
-or you can use console command to translate messages
+Or you can use console command to translate messages
 
 ```bash
-app/console gtranslate:translate en fr AcmeDemoBundle
+app/console gtranslate:translate [--override] [-d|--domains[="..."]] localeFrom localeTo [bundles]
+```
+
+Command arguments:
+* `localeFrom`: Locale from
+* `localeTo`: Locale to
+* `bundles`: Import translation for this specific bundles (comma separted) [optional]
+
+Command options:
+* `--override`: Override existing translation [optional]
+* `--domains` (or -d): Only imports files for given domains (comma separated) [optional]
+
+
+Example:
+
+```bash
+$ app/console gtranslate:translate en fr AcmeFooBundle
+$ app/console gtranslate:translate en it --domains=messages,foo,bar
+$ app/console gtranslate:translate en es AcmeFooBundle,AcmeBarBundle --domains=messages,foo,bar
 ```
 
 Bug tracking
