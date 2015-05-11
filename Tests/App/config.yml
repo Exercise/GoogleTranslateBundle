@@ -4,3 +4,4 @@ framework:
 
 exercise_google_translate:
     api_key: thisistestapikey
+    yaml_indent: 4

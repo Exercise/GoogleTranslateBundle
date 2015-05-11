@@ -75,7 +75,8 @@ class GoogleTranslateCommand extends ContainerAwareCommand
 
                     $file = $basePath . '/' . $messageToFileName;
                     $messagesTo = $this->ksortRecursive($messagesTo);
-                    file_put_contents($file, Yaml::dump($messagesTo, 100500));
+                    $yamlIndent = $this->getContainer()->getParameter('exercise_google_translate.yaml_indent');
+                    file_put_contents($file, Yaml::dump($messagesTo, 100500, $yamlIndent));
                 }
             }
         }
